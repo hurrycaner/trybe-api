@@ -1,0 +1,20 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  user: <%= ENV['TRYBE_API_DATABASE_USER'] %>
+  password: <%= ENV['TRYBE_API_DATABASE_PASSWORD'] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: trybe_api_development
+
+test:
+  <<: *default
+  database: trybe_api_test
+
+production:
+  <<: *default
+  database: trybe_api_production
+  username: trybe_api
+  password: <%= ENV['TRYBE_API_DATABASE_PASSWORD'] %>
