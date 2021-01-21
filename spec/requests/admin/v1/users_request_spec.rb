@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::V1::Users', type: :request do
-  let(:user) { create(:user) }
+  let!(:user) { create(:user) }
 
   context 'GET /users' do
     let(:url) { '/admin/v1/users' }
@@ -35,7 +35,7 @@ RSpec.describe 'Admin::V1::Users', type: :request do
   end
 
   context 'POST /users' do
-    let(:url) { "/admin/v1/users/#{user.id}" }
+    let(:url) { '/admin/v1/users' }
 
     context 'with valid params' do
       let(:user_params) { { user: attributes_for(:user) }.to_json }
@@ -67,6 +67,11 @@ RSpec.describe 'Admin::V1::Users', type: :request do
         expect do
           post url, headers: auth_header(user), params: invalid_user_params
         end.to_not change(User, :count)
+      end
+
+      it 'returns error message' do
+        post url, headers: auth_header(user), params: invalid_user_params
+        expect(json_body['errors']['fields']).to have_key('name')
       end
 
       it 'returns unprocessable_entity status' do
