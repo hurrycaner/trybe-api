@@ -1,6 +1,7 @@
 module Admin::V1
   class UsersController < ApiController
     before_action :set_user, only: %i[show update destroy]
+    skip_before_action :authenticate_user!, only: :create
 
     def index
       @users = User.all
