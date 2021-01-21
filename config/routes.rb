@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   namespace :admin do
     namespace :v1 do
       get 'home', to: 'home#index'
+      resources :users
     end
   end
 end
