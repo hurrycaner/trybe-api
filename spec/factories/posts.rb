@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :post do
-    title { "MyString" }
-    content { "MyText" }
-    user { nil }
+    sequence(:title) { |n| "Title #{n}" }
+    content { Faker::Lorem.paragraph }
+    user
   end
 end
