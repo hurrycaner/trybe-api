@@ -33,4 +33,46 @@ RSpec.describe 'Admin::V1::Users', type: :request do
       expect(response).to have_http_status(:ok)
     end
   end
+
+  context 'POST /users' do
+    let(:url) { "/admin/v1/users/#{user.id}" }
+
+    context 'with valid params' do
+      let(:user_params) { { user: attributes_for(:user) }.to_json }
+
+      it 'adds a new User' do
+        expect do
+          post url, headers: auth_header(user), params: user_params
+        end.to change(User, :count).by(1)
+      end
+
+      it 'returns last added User' do
+        post url, headers: auth_header(user), params: user_params
+        expected_user = User.last.as_json(only: %i[id name image email profile])
+        expect(json_body['user']).to eq expected_user
+      end
+
+      it 'returns success status' do
+        post url, headers: auth_header(user), params: user_params
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'with invalid params' do
+      let(:invalid_user_params) do
+        { user: attributes_for(:user, name: nil) }.to_json
+      end
+
+      it 'does not add a new User' do
+        expect do
+          post url, headers: auth_header(user), params: invalid_user_params
+        end.to_not change(User, :count)
+      end
+
+      it 'returns unprocessable_entity status' do
+        post url, headers: auth_header(user), params: invalid_user_params
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
 end
