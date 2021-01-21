@@ -21,7 +21,7 @@ RSpec.describe 'Admin::V1::Users', type: :request do
 
   context 'GET /users/:id' do
     let(:user) { create(:user) }
-    let(:url) { "/admin/v1/users#{user.id}" }
+    let(:url) { "/admin/v1/users/#{user.id}" }
     before(:each) { get url, headers: auth_header(user) }
 
     it 'returns the requested User' do
