@@ -144,7 +144,7 @@ RSpec.describe 'Admin::V1::Users', type: :request do
 
     it 'returns success status' do
       delete url, headers: auth_header(login_user)
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:no_content)
     end
 
     it 'does not return any body content' do

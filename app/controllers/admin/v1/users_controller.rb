@@ -1,6 +1,6 @@
 module Admin::V1
   class UsersController < ApiController
-    before_action :set_user, only: %i[show update]
+    before_action :set_user, only: %i[show update destroy]
 
     def index
       @users = User.all
@@ -16,6 +16,12 @@ module Admin::V1
     def update
       @user.attributes = user_params
       save_user!
+    end
+
+    def destroy
+      @user.destroy!
+    rescue StandardError
+      render json: { errors: { fields: @user.errors.messages } }
     end
 
     private
