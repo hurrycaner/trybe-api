@@ -16,4 +16,19 @@ RSpec.describe 'Admin::V1::Posts', type: :request do
       expect(response).to have_http_status(:ok)
     end
   end
+
+  context 'GET /posts/:id' do
+    let(:post) { create(:post) }
+    let(:url) { "/admin/v1/posts/#{post.id}" }
+    before(:each) { get url, headers: auth_header(user) }
+
+    it 'returns the requested Post' do
+      expected_post = post.as_json
+      expect(json_body['post']).to eq expected_post
+    end
+
+    it 'returns success status' do
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end
