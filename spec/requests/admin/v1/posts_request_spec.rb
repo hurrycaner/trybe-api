@@ -23,7 +23,7 @@ RSpec.describe 'Admin::V1::Posts', type: :request do
     before(:each) { get url, headers: auth_header(user) }
 
     it 'returns the requested Post' do
-      expected_post = post.as_json
+      expected_post = merge_user_info_in_post(post)
       expect(json_body['post']).to eq expected_post
     end
 
@@ -31,4 +31,12 @@ RSpec.describe 'Admin::V1::Posts', type: :request do
       expect(response).to have_http_status(:ok)
     end
   end
+end
+
+def merge_user_info_in_post(post)
+  user = User.find(post.user_id)
+  json = post.as_json
+  json['user'] = user.as_json
+  json.delete('user_id')
+  json
 end
