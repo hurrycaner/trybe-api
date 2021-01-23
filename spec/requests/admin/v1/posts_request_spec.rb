@@ -1,5 +1,6 @@
 require 'rails_helper'
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe 'Admin::V1::Posts', type: :request do
   let!(:user) { create(:user) }
 
@@ -129,7 +130,29 @@ RSpec.describe 'Admin::V1::Posts', type: :request do
       end
     end
   end
+
+  context 'DELETE /posts/:id' do
+    let!(:post) { create(:post) }
+    let(:url) { "/admin/v1/posts/#{post.id}" }
+
+    it 'removes Post' do
+      expect do
+        delete url, headers: auth_header(user)
+      end.to change(Post, :count).by(-1)
+    end
+
+    it 'returns success status' do
+      delete url, headers: auth_header(user)
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it 'does not return any body content' do
+      delete url, headers: auth_header(user)
+      expect(json_body).to_not be_present
+    end
+  end
 end
+# rubocop:enable Metrics/BlockLength
 
 def merge_user_info_in_post(post)
   user = User.find(post.user_id)
