@@ -1,7 +1,7 @@
 module Admin::V1
   class PostsController < ApiController
     skip_before_action :authenticate_user!, only: %i[index show]
-    before_action :set_post, only: %i[show]
+    before_action :set_post, only: %i[show update]
 
     def index
       @posts = Post.all
@@ -12,6 +12,11 @@ module Admin::V1
     def create
       @post = Post.new(post_params)
       @post.user = current_user
+      save_post!
+    end
+
+    def update
+      @post.attributes = post_params
       save_post!
     end
 
