@@ -79,6 +79,55 @@ RSpec.describe 'Admin::V1::Posts', type: :request do
       end
     end
   end
+
+  context 'PATCH /posts/:id' do
+    let(:post) { create(:post) }
+    let(:url) { "/admin/v1/posts/#{post.id}" }
+
+    context 'with valid params' do
+      let(:new_title) { 'My new Title' }
+      let(:post_params) { { post: { title: new_title } }.to_json }
+      before(:each) { patch url, headers: auth_header(user), params: post_params }
+
+      it 'updates Post' do
+        post.reload
+        expect(post.title).to eq new_title
+      end
+
+      it 'returns updated Post' do
+        post.reload
+        expected_post = post.map { |post| merge_user_info_in_post(post) }
+        expect(json_body['post']).to eq expected_post
+      end
+
+      it 'returns success status' do
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'with invalid params' do
+      let(:invalid_post_params) do
+        { post: attributes_for(:post, title: nil) }.to_json
+      end
+
+      it 'does not update Post' do
+        old_title = post.title
+        patch url, headers: auth_header(user), params: invalid_post_params
+        post.reload
+        expect(post.title).to eq old_title
+      end
+
+      it 'returns error message' do
+        patch url, headers: auth_header(user), params: invalid_post_params
+        expect(json_body['errors']['fields']).to have_key('title')
+      end
+
+      it 'returns unprocessable_entity status' do
+        patch url, headers: auth_header(user), params: invalid_post_params
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
 end
 
 def merge_user_info_in_post(post)
