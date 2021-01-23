@@ -5,11 +5,12 @@ RSpec.describe 'Admin::V1::Posts', type: :request do
 
   context 'GET /posts' do
     let(:url) { '/admin/v1/posts' }
-    let!(:posts) { create_list(:post, 10) }
+    let!(:posts) { create_list(:post, 2) }
     before(:each) { get url, headers: auth_header(user) }
 
     it 'returns all Posts' do
-      expect(json_body['posts']).to contain_exactly(*posts.as_json)
+      expected_posts = posts.map { |post| merge_user_info_in_post(post) }
+      expect(json_body['posts']).to contain_exactly(*expected_posts.as_json)
     end
 
     it 'returns success status' do
