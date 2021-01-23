@@ -1,7 +1,7 @@
 module Admin::V1
   class PostsController < ApiController
     skip_before_action :authenticate_user!, only: %i[index show]
-    before_action :set_post, only: %i[show update]
+    before_action :set_post, only: %i[show update destroy]
 
     def index
       @posts = Post.all
@@ -18,6 +18,12 @@ module Admin::V1
     def update
       @post.attributes = post_params
       save_post!
+    end
+
+    def destroy
+      @post.destroy!
+    rescue StandardError
+      render json: { errors: { fields: @post.errors.messages } }
     end
 
     private
