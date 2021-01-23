@@ -6,6 +6,8 @@ Rails.application.routes.draw do
       get 'home', to: 'home#index'
       resources :users
       resources :posts
+
+      patch '/users/:id/turn_admin', to: 'users#turn_admin'
     end
   end
 end

@@ -1,7 +1,7 @@
 module Admin::V1
   class UsersController < ApiController
     skip_before_action :authenticate_user!, only: :create
-    before_action :set_user, only: %i[show update destroy]
+    before_action :set_user, only: %i[show update destroy turn_admin]
 
     def index
       @users = User.all
@@ -21,6 +21,19 @@ module Admin::V1
 
     def destroy
       @user.destroy!
+    rescue StandardError
+      render json: { errors: { fields: @user.errors.messages } }
+    end
+
+    # simple action to help in the usage of application.
+    # in production we should probably do such thing manually.
+    def turn_admin
+      if current_user.profile.downcase == 'admin'
+        @user.profile = 'admin'
+        save_user!
+      else
+        render json: { error: 'You cannot perform such action' }, status: :unauthorized
+      end
     rescue StandardError
       render json: { errors: { fields: @user.errors.messages } }
     end
