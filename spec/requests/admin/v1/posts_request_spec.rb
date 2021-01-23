@@ -96,10 +96,8 @@ RSpec.describe 'Admin::V1::Posts', type: :request do
       end
 
       it 'returns updated Post' do
-        expected_post = []
-        expected_post << post.reload
-        expected_post = expected_post.map { |post| merge_user_info_in_post(post) }
-        expect(json_body['post']).to eq(*expected_post)
+        expected_post = merge_user_info_in_post(post.reload)
+        expect(json_body['post']).to eq expected_post
       end
 
       it 'returns success status' do
@@ -157,7 +155,7 @@ end
 def merge_user_info_in_post(post)
   user = User.find(post.user_id)
   json = post.as_json
-  json['user'] = user.as_json
+  json['user'] = user.as_json(only: %i[id name email profile image])
   json.delete('user_id')
   json
 end
