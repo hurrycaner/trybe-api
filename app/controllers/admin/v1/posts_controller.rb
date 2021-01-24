@@ -1,6 +1,7 @@
 module Admin::V1
   class PostsController < ApiController
     skip_before_action :authenticate_user!, only: %i[index show]
+    skip_before_action :restrict_access_for_admin!, only: %i[index show]
     before_action :set_post, only: %i[show update destroy]
 
     def index

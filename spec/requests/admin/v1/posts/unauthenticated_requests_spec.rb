@@ -4,7 +4,7 @@ RSpec.describe 'Admin::V1::Posts without authentication', type: :request do
   context 'GET /posts' do
     let(:url) { '/admin/v1/posts' }
     let!(:posts) { create_list(:post, 2) }
-    before(:each) { get url }
+    before(:each) { get url, headers: { 'Content-type' => 'application/json', 'Accept' => 'application/json' } }
 
     it 'returns all Posts' do
       expected_posts = posts.map { |post| merge_user_info_in_post(post) }
@@ -19,7 +19,7 @@ RSpec.describe 'Admin::V1::Posts without authentication', type: :request do
   context 'GET /posts/:id' do
     let(:post) { create(:post) }
     let(:url) { "/admin/v1/posts/#{post.id}" }
-    before(:each) { get url, headers: auth_header(user) }
+    before(:each) { get url, headers: { 'Content-type' => 'application/json', 'Accept' => 'application/json' } }
 
     it 'returns the requested Post' do
       expected_post = merge_user_info_in_post(post)
@@ -34,7 +34,7 @@ RSpec.describe 'Admin::V1::Posts without authentication', type: :request do
   context 'POST /posts' do
     let(:url) { '/admin/v1/posts' }
 
-    before(:each) { post url, hehaders: auth_header(user) }
+    before(:each) { post url }
 
     include_examples 'unauthenticated access'
   end
@@ -43,7 +43,7 @@ RSpec.describe 'Admin::V1::Posts without authentication', type: :request do
     let(:post) { create(:post) }
     let(:url) { "/admin/v1/posts/#{post.id}" }
 
-    before(:each) { patch url, hehaders: auth_header(user) }
+    before(:each) { patch url }
 
     include_examples 'unauthenticated access'
   end
@@ -52,7 +52,7 @@ RSpec.describe 'Admin::V1::Posts without authentication', type: :request do
     let(:post) { create(:post) }
     let(:url) { "/admin/v1/posts/#{post.id}" }
 
-    before(:each) { delete url, hehaders: auth_header(user) }
+    before(:each) { delete url }
 
     include_examples 'unauthenticated access'
   end
