@@ -22,7 +22,7 @@ module Admin::V1
     def destroy
       @user.destroy!
     rescue StandardError
-      render json: { errors: { fields: @user.errors.messages } }
+      render_error(fields: @user.errors.messages)
     end
 
     # simple action to help in the usage of application.
@@ -32,10 +32,10 @@ module Admin::V1
         @user.profile = 'admin'
         save_user!
       else
-        render json: { error: 'You cannot perform such action' }, status: :unauthorized
+        render_error(message: 'You cannot perform such action', status: :unauthorized)
       end
     rescue StandardError
-      render json: { errors: { fields: @user.errors.messages } }
+      render_error(fields: @user.errors.messages)
     end
 
     private
@@ -55,7 +55,7 @@ module Admin::V1
       @user.save!
       render :show
     rescue StandardError
-      render json: { errors: { fields: @user.errors.messages } }, status: :unprocessable_entity
+      render_error(fields: @user.errors.messages)
     end
   end
 end

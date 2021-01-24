@@ -23,7 +23,7 @@ module Admin::V1
     def destroy
       @post.destroy!
     rescue StandardError
-      render json: { errors: { fields: @post.errors.messages } }
+      render_error(fields: @post.errors.messages)
     end
 
     private
@@ -42,7 +42,7 @@ module Admin::V1
       @post.save!
       render :show
     rescue StandardError
-      render json: { errors: { fields: @post.errors.messages } }, status: :unprocessable_entity
+      render_error(fields: @post.errors.messages)
     end
   end
 end
