@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 # rubocop:disable Metrics/BlockLength
-RSpec.describe 'Admin::V1::Users', type: :request do
+RSpec.describe 'Admin::V1::Users as :admin', type: :request do
   let!(:login_user) { create(:user) }
 
   context 'GET /users' do
