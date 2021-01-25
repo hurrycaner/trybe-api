@@ -35,7 +35,7 @@ module Admin::V1
     end
 
     def searchable_params
-      params.permit({ search: :title }, { order: {} }, :page, :length)
+      params.permit({ search: {} }, { order: {} }, :page, :length)
     end
 
     def post_params
