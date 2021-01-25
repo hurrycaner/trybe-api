@@ -1,4 +1,6 @@
 class Post < ApplicationRecord
+  include LikeSearchable
+
   belongs_to :user
 
   validates :title, :content, presence: true
