@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Admin::V1::Posts as :client', type: :request do
+RSpec.describe 'Admin::V1::Users as :client', type: :request do
   let!(:login_user) { create(:user, profile: :client) }
 
   context 'GET /users' do
