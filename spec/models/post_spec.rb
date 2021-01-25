@@ -10,4 +10,5 @@ RSpec.describe Post, type: :model do
 
   it_behaves_like 'like searchable concern', :post, :title
   it_behaves_like 'like searchable concern', :post, :content
+  it_behaves_like 'paginatable concern', :post
 end

@@ -1,5 +1,6 @@
 class Post < ApplicationRecord
   include LikeSearchable
+  include Paginatable
 
   belongs_to :user
 
