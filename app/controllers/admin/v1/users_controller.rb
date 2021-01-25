@@ -5,7 +5,8 @@ module Admin::V1
     before_action :set_user, only: %i[show update destroy turn_admin]
 
     def index
-      @users = User.all
+      @loading_service = Admin::ModelLoadingService.new(search_scope, searchable_params)
+      @loading_service.call
     end
 
     def show; end
@@ -43,6 +44,14 @@ module Admin::V1
 
     def set_user
       @user = User.find(params[:id])
+    end
+
+    def searchable_params
+      params.permit({ search: {} }, { order: {} }, :page, :length)
+    end
+
+    def search_scope
+      current_user ? User.where.not(id: current_user.id) : User.all
     end
 
     def user_params
