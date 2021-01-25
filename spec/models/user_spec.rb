@@ -9,5 +9,5 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to have_many(:posts).dependent(:destroy) }
 
-  it_behaves_like 'name searchable concern', :post
+  it_behaves_like 'name searchable concern', :user
 end
