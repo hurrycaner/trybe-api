@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Admin::V1::Posts as without authentication', type: :request do
+RSpec.describe 'Admin::V1::Users without authentication', type: :request do
   context 'GET /users' do
     let(:url) { '/admin/v1/users' }
     let!(:users) { create_list(:user, 10) }

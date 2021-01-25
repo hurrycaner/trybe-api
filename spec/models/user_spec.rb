@@ -8,4 +8,6 @@ RSpec.describe User, type: :model do
   it { is_expected.to define_enum_for(:profile).with_values({ admin: 0, client: 1 }) }
 
   it { is_expected.to have_many(:posts).dependent(:destroy) }
+
+  it_behaves_like 'name searchable concern', :user
 end
