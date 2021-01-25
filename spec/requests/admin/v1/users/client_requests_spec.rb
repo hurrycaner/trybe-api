@@ -9,8 +9,6 @@ RSpec.describe 'Admin::V1::Users as :client', type: :request do
     before(:each) { get url, headers: auth_header(login_user) }
 
     it 'returns all Users' do
-      # add the current user to the users list to make sure all users are returned
-      users << login_user
       expect(json_body['users']).to contain_exactly(*users.as_json(only: %i[id name image email profile]))
     end
 
