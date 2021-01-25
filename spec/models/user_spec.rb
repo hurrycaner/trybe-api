@@ -10,4 +10,5 @@ RSpec.describe User, type: :model do
   it { is_expected.to have_many(:posts).dependent(:destroy) }
 
   it_behaves_like 'like searchable concern', :user, :name
+  it_behaves_like 'paginatable concern', :user
 end
