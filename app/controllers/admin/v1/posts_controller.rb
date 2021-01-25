@@ -5,7 +5,8 @@ module Admin::V1
     before_action :set_post, only: %i[show update destroy]
 
     def index
-      @posts = Post.all
+      @loading_service = Admin::ModelLoadingService.new(Post.all, searchable_params)
+      @loading_service.call
     end
 
     def show; end
@@ -31,6 +32,10 @@ module Admin::V1
 
     def set_post
       @post = Post.find(params[:id])
+    end
+
+    def searchable_params
+      params.permit({ search: :title }, { order: {} }, :page, :length)
     end
 
     def post_params

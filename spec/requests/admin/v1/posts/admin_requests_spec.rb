@@ -6,16 +6,102 @@ RSpec.describe 'Admin::V1::Posts as :admin', type: :request do
 
   context 'GET /posts' do
     let(:url) { '/admin/v1/posts' }
-    let!(:posts) { create_list(:post, 2) }
-    before(:each) { get url, headers: auth_header(user) }
+    let!(:posts) { create_list(:post, 10) }
 
-    it 'returns all Posts' do
-      expected_posts = posts.map { |post| merge_user_info_in_post(post) }
-      expect(json_body['posts']).to contain_exactly(*expected_posts.as_json)
+    context 'without any params' do
+      it 'returns 10 posts' do
+        get url, headers: auth_header(user)
+        expect(json_body['posts'].count).to eq 10
+      end
+
+      it 'returns 10 first posts' do
+        get url, headers: auth_header(user)
+        expected_posts = posts[0..9].map { |post| merge_user_info_in_post(post) }
+        expect(json_body['posts']).to contain_exactly(*expected_posts)
+      end
+
+      it 'returns success status' do
+        get url, headers: auth_header(user)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it_behaves_like 'pagination meta attributes', { page: 1, length: 10, total: 10, total_pages: 1 } do
+        before { get url, headers: auth_header(user) }
+      end
     end
 
-    it 'returns success status' do
-      expect(response).to have_http_status(:ok)
+    context 'with search[title] param' do
+      let!(:search_title_posts) do
+        posts = []
+        15.times { |n| posts << create(:post, title: "Search #{n + 1}") }
+        posts
+      end
+
+      let(:search_params) { { search: { title: 'Search' } } }
+
+      it 'returns only seached posts limited by default pagination' do
+        get url, headers: auth_header(user), params: search_params
+        expected_posts = search_title_posts[0..9].map do |post|
+          merge_user_info_in_post(post)
+        end
+        expect(json_body['posts']).to contain_exactly(*expected_posts)
+      end
+
+      it 'returns success status' do
+        get url, headers: auth_header(user), params: search_params
+        expect(response).to have_http_status(:ok)
+      end
+
+      it_behaves_like 'pagination meta attributes', { page: 1, length: 10, total: 15, total_pages: 2 } do
+        before { get url, headers: auth_header(user), params: search_params }
+      end
+    end
+
+    context 'with pagination params' do
+      let(:page) { 2 }
+      let(:length) { 5 }
+
+      let(:pagination_params) { { page: page, length: length } }
+
+      it 'returns records sized by :length' do
+        get url, headers: auth_header(user), params: pagination_params
+        expect(json_body['posts'].count).to eq length
+      end
+
+      it 'returns posts limited by pagination' do
+        get url, headers: auth_header(user), params: pagination_params
+        expected_posts = posts[5..9].map { |post| merge_user_info_in_post(post) }
+        expect(json_body['posts']).to contain_exactly(*expected_posts)
+      end
+
+      it 'returns success status' do
+        get url, headers: auth_header(user), params: pagination_params
+        expect(response).to have_http_status(:ok)
+      end
+
+      it_behaves_like 'pagination meta attributes', { page: 2, length: 5, total: 10, total_pages: 2 } do
+        before { get url, headers: auth_header(user), params: pagination_params }
+      end
+    end
+
+    context 'with order params' do
+      let(:order_params) { { order: { title: 'desc' } } }
+
+      it 'returns ordered posts limited by default pagination' do
+        get url, headers: auth_header(user), params: order_params
+        posts.sort! { |a, b| b[:title] <=> a[:title] }
+        expected_posts = posts[0..9].map { |post| merge_user_info_in_post(post) }
+        expect(json_body['posts']).to contain_exactly(*expected_posts)
+      end
+
+      it 'returns success status' do
+        get url, headers: auth_header(user), params: order_params
+        expect(response).to have_http_status(:ok)
+      end
+
+      it_behaves_like 'pagination meta attributes', { page: 1, length: 10, total: 10, total_pages: 1 } do
+        before { get url, headers: auth_header(user), params: order_params }
+      end
     end
   end
 
