@@ -39,8 +39,11 @@ Um script responsável pela criação dos bancos de desenvolvimento e testes est
 ## Criando as tabelas
 Para criar o schema do banco, basta executar o script responsável através do comando: <code>rails db:migrate</code>.
 
+## Rodando a Suit de testes
+O projeto foi totalmente desenvolvido utilizando TDD. Para rodar a suit de testes execute: <code>bundle exec rspec</code>
+
 ## Populando o banco de desenvolvimento
-Para popular o banco de desenvolvimento, execute: <code>rails db:seed</code>.
+Com todos os testes passando, é hora de popular o banco de desenvolvimento: <code>rails db:seed</code>.
 
 ## Subindo o servidor
 Se os passos anteriores foram corretamente executados, está tudo pronto para subir o servidor. Basta executar <code>rails s</code> e aguardar alguns instantes. Com o servidor no ar, a API está disponível no endereço: <code>localhost:3000</code>. Caso você utilize a porta 3000 para outra finalidade, é possível alterar a porta ao subir o servidor: <code>rails s -p NUMERO_DA_PORTA_DESEJADA</code>
