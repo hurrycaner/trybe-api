@@ -1,7 +1,7 @@
 module Admin::V1
   class PostsController < ApiController
     skip_before_action :authenticate_user!, only: %i[index show]
-    skip_before_action :restrict_access_for_admin!, only: %i[index show]
+    skip_before_action :restrict_access_for_admin!, only: %i[index show create update]
     before_action :set_post, only: %i[show update destroy]
 
     def index
@@ -18,8 +18,12 @@ module Admin::V1
     end
 
     def update
-      @post.attributes = post_params
-      save_post!
+      if owner_or_admin?(@post)
+        @post.attributes = post_params
+        save_post!
+      else
+        render_error(message: 'Forbidden access', status: :forbidden)
+      end
     end
 
     def destroy
@@ -42,6 +46,10 @@ module Admin::V1
       return {} unless params.key?(:post)
 
       params.require(:post).permit(:title, :content)
+    end
+
+    def owner_or_admin?(record)
+      record.user == current_user || current_user.admin?
     end
 
     def save_post!

@@ -34,7 +34,7 @@ module Admin::V1
         @user.profile = 'admin'
         save_user!
       else
-        render_error(message: 'You cannot perform such action', status: :unauthorized)
+        render_error(message: 'Acesso negado.', status: :unauthorized)
       end
     rescue StandardError
       render_error(fields: @user.errors.messages)
