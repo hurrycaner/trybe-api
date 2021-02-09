@@ -1,0 +1,10 @@
+{
+    "name": "trybe-api",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "forwardPorts": [
+        3000,
+        5432
+    ]
+}
